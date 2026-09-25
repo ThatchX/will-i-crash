@@ -351,7 +351,9 @@ export default function LiveFlightConsole() {
 
   const currentInitial = activeInitialRef.current ?? initial
   const altitudeProgress = flight
-    ? clamp(1 - flight.altitudeMeters / currentInitial.altitudeMeters, 0, 1)
+    // Keep the surface as the lower visual boundary, but do not impose an
+    // artificial ceiling. A climbing craft can leave the frame and re-enter.
+    ? Math.min(1, 1 - flight.altitudeMeters / currentInitial.altitudeMeters)
     : 0
   const landerTop = 70 + altitudeProgress * Math.max(0, stageHeight - 226)
   const landerLeft = flight
