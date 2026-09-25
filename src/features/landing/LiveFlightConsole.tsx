@@ -447,15 +447,6 @@ export default function LiveFlightConsole() {
               <p className="absolute inset-x-0 bottom-3 text-center text-xs text-white/45">{art.detail}</p>
             </div>
 
-            <div className="absolute inset-x-4 bottom-[92px] z-20 grid grid-cols-3 gap-2 sm:grid-cols-6">
-              <HudMetric label="Altitude" value={`${formatNumber(flight?.altitudeMeters ?? initial.altitudeMeters)} m`} />
-              <HudMetric label="Vertical" value={`${formatSigned(flight?.verticalSpeedMetersPerSecond ?? initial.verticalSpeedMetersPerSecond)} m/s`} />
-              <HudMetric label="Horizontal" value={`${formatSigned(flight?.horizontalSpeedMetersPerSecond ?? initial.horizontalSpeedMetersPerSecond)} m/s`} />
-              <HudMetric label="Angle" value={`${formatSigned(flight?.angleDegrees ?? 0)}°`} />
-              <HudMetric label="Throttle" value={`${formatNumber(controls.throttlePercent)}%`} />
-              <HudMetric label="Fuel" value={`${formatNumber(flight?.fuelPercent ?? 100)}%`} />
-            </div>
-
             <div className={`absolute left-4 top-24 z-20 max-w-[260px] rounded-lg border bg-black/30 px-3 py-2 text-xs backdrop-blur-sm ${warning.tone}`} data-testid="flight-warning">
               {warning.text}
             </div>
@@ -488,6 +479,19 @@ export default function LiveFlightConsole() {
             )}
           </section>
         </div>
+
+        <section
+          data-testid="flight-telemetry"
+          aria-label="Live flight telemetry"
+          className="mt-3 grid grid-cols-3 gap-2 rounded-2xl border border-border bg-card/70 p-2 sm:grid-cols-6"
+        >
+          <HudMetric label="Altitude" value={`${formatNumber(flight?.altitudeMeters ?? initial.altitudeMeters)} m`} />
+          <HudMetric label="Vertical" value={`${formatSigned(flight?.verticalSpeedMetersPerSecond ?? initial.verticalSpeedMetersPerSecond)} m/s`} />
+          <HudMetric label="Horizontal" value={`${formatSigned(flight?.horizontalSpeedMetersPerSecond ?? initial.horizontalSpeedMetersPerSecond)} m/s`} />
+          <HudMetric label="Angle" value={`${formatSigned(flight?.angleDegrees ?? 0)}°`} />
+          <HudMetric label="Throttle" value={`${formatNumber(controls.throttlePercent)}%`} />
+          <HudMetric label="Fuel" value={`${formatNumber(flight?.fuelPercent ?? 100)}%`} />
+        </section>
 
         <section className="mt-5" data-testid="flight-result" aria-live="polite">
           {result ? <FlightResultPanel result={result} saving={saving} /> : (
@@ -599,7 +603,7 @@ function FlightResultPanel({ result, saving }: { result: FlightResult; saving: b
   return <div className={`grid gap-4 rounded-2xl border p-5 sm:grid-cols-[1fr_auto] sm:items-center ${copy.border}`}><div className="flex items-start gap-3">{result.outcome === 'SAFE_APPROACH' ? <ShieldCheck className={`mt-1 size-6 shrink-0 ${copy.text}`} aria-hidden /> : <TriangleAlert className={`mt-1 size-6 shrink-0 ${copy.text}`} aria-hidden />}<div><div className="flex flex-wrap items-baseline gap-x-3 gap-y-1"><h2 className={`text-2xl font-bold ${copy.text}`}>{copy.gameLabel}</h2><span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{copy.engineeringLabel}</span>{saving && <span className="text-xs text-muted-foreground">Verifying…</span>}</div><p className="mt-1 text-sm text-foreground">{result.explanation}</p></div></div><dl className="grid grid-cols-2 gap-2 sm:grid-cols-5"><ResultMetric label="Vertical" value={`${formatNumber(result.touchdownVerticalSpeed)} m/s`} /><ResultMetric label="Horizontal" value={`${formatSigned(result.touchdownHorizontalSpeed)} m/s`} /><ResultMetric label="Angle" value={`${formatSigned(result.touchdownAngleDegrees)}°`} /><ResultMetric label="Fuel" value={`${formatNumber(result.fuelRemainingPercent)}%`} /><ResultMetric label="Time" value={`${formatNumber(result.flightTimeSeconds)} s`} /></dl></div>
 }
 
-function HudMetric({ label, value }: { label: string; value: string }) { return <div className="rounded-lg border border-white/12 bg-black/35 px-2 py-2 backdrop-blur-sm"><p className="text-[9px] uppercase tracking-wider text-white/45">{label}</p><p className="mt-0.5 truncate font-mono text-xs font-semibold text-white">{value}</p></div> }
+function HudMetric({ label, value }: { label: string; value: string }) { return <div className="rounded-xl border border-border/70 bg-background/65 px-3 py-2.5"><p className="text-[9px] uppercase tracking-wider text-muted-foreground">{label}</p><p className="mt-0.5 truncate font-mono text-sm font-semibold text-foreground">{value}</p></div> }
 function ResultMetric({ label, value }: { label: string; value: string }) { return <div className="min-w-28 rounded-xl border border-border/60 bg-background/55 px-3 py-2.5"><dt className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</dt><dd className="mt-1 font-mono text-sm font-semibold">{value}</dd></div> }
 
 function FlightCard({ record, deleting, canDelete, onDelete }: { record: { recordId: string; createdAt: string; data: FlightRunRecord }; deleting: boolean; canDelete: boolean; onDelete: () => void }) {
