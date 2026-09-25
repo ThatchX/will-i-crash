@@ -1,40 +1,54 @@
 # Will I Crash?
 
-Will I Crash? is a one-page planetary landing sandbox built on DeepSpace. A player chooses any planet, sets the lander's altitude, downward speed, engine power, and tilt, then watches the lander descend toward a fixed reference surface. The app returns an explainable **Landing secured**, **Close call**, or **Surface impact** result and saves signed-in attempts to a private realtime flight log.
+Will I Crash? is a one-page, live planetary landing game built on DeepSpace. Choose any planet, set the starting altitude and velocity, then pilot the lander with throttle and rotation controls. The same deterministic simulation runs in the browser and on the server, so every saved result can be replayed and verified.
 
-## The model
+## The flight model
 
-Model 2 uses a deliberately small deterministic calculation:
+Model 03 advances at a fixed 30 ticks per second. Each tick applies:
 
-- the same lander has a maximum engine acceleration of 35 m/s² on every planet
-- vertical engine acceleration: `maximum acceleration × power × cos(tilt)`
-- net braking acceleration: `vertical engine acceleration − planetary gravity`
-- stopping distance: `speed² ÷ (2 × net braking acceleration)`
-- a safe approach uses no more than 70% of the available altitude
-- minimum safe power is the throttle required to meet that 70% stopping budget
+- the selected planet's gravity
+- the lander's thrust, split into vertical and horizontal acceleration by its angle
+- rotation at a fixed rate while a left or right input is held
+- fuel consumption in proportion to throttle
+- horizontal and vertical movement toward a flat reference surface
 
-The eight planet gravities are stored as named configuration data. The model assumes constant power and tilt, no atmosphere, and no horizontal velocity. Gas giants use a fictional cloud-top reference platform. It is an educational estimate, not flight software.
+At surface contact, the model evaluates vertical speed, horizontal speed, and angle:
 
-## Product decisions
+| Result | Vertical speed | Horizontal speed | Absolute angle |
+| --- | ---: | ---: | ---: |
+| Landing secured | ≤ 5 m/s | ≤ 3 m/s | ≤ 10° |
+| Close call | ≤ 10 m/s | ≤ 6 m/s | ≤ 20° |
+| Surface impact | Any larger value | Any larger value | Any larger value |
 
-- The simulator is a single page with no authored missions. Players create their own conditions.
-- The surface stays fixed while the lander moves toward it.
-- Sliders provide fast experimentation and paired number inputs allow exact values.
-- Planet changes affect gravity and artwork while keeping the lander constant.
-- Results show stopping distance, remaining altitude, minimum safe power, and power margin.
-- Attempts are not ranked globally because player-selected starting conditions are not comparable.
-- The animation illustrates the deterministic result in a short sequence rather than pretending to be a continuous physics engine.
+The model intentionally omits atmosphere, terrain, and orbit. Gas giants use a fictional cloud-top platform. This is an educational simulation, not flight software.
 
-## DeepSpace features
+## How to play
 
-- DeepSpace authentication identifies the pilot when an attempt is run.
-- An authenticated server action validates telemetry, calculates the result, and assigns ownership from the verified caller identity.
-- A private immutable `descent-attempts` collection stores model inputs and outputs. Users can read and delete only their own attempts.
-- Realtime records synchronize the most recent 10 attempts across the pilot's signed-in sessions.
+1. Select one of the eight planets.
+2. Set altitude, downward speed, and horizontal drift.
+3. Start the flight and manage throttle, rotation, and finite fuel.
+4. Reach the surface slowly, with little drift, and close to upright.
+5. Review the verified result and ask the AI flight instructor for a debrief.
+
+The interface supports sliders and buttons on touch devices, plus keyboard controls:
+
+- `W` / `S` or `↑` / `↓`: increase or decrease throttle
+- `A` / `D` or `←` / `→`: hold to rotate
+- `Space`: cut the engine
+- `P`: pause or resume
+
+## DeepSpace integrations
+
+- **Authentication** identifies the pilot only when they begin a flight, so visitors can inspect the simulator first.
+- **Server actions** replay the submitted control trace with the shared flight engine before accepting a result.
+- **Realtime records** store private, immutable, versioned flight runs and synchronize the latest ten runs across the pilot's sessions.
+- **AI chat** provides optional preflight guidance and post-flight coaching. Its tools are read-only, and it cannot control the craft or determine the outcome.
+
+Model 02 descent attempts remain in their original collection. Model 03 writes to a separate `flight-runs` collection so old results are never reinterpreted.
 
 ## Engineering decisions
 
-The reasoning behind the product, physics model, interface, data, and DeepSpace choices is recorded in the [architecture decision log](docs/decisions/README.md). New material decisions should be added there when they are made so the implementation and its rationale stay connected.
+The product scope, physics, interface, data model, security, and AI boundaries are recorded in the [architecture decision log](docs/decisions/README.md).
 
 ## Run locally
 
@@ -51,7 +65,7 @@ If macOS exhausts file watchers while starting the optional live ESLint checker:
 SKIP_DEV_CHECKER=1 npx deepspace dev start
 ```
 
-The normal validation commands still run separately:
+Run the project checks with:
 
 ```bash
 npm run validate
@@ -59,6 +73,6 @@ npm run lint
 npm run build
 ```
 
-## Possible V3 directions
+## Honest limits and possible next work
 
-V3 could add shared instructor rooms, alerts, or an optional AI flight instructor. Those features are intentionally outside this focused version.
+The current surface is flat and effectively infinite, the flight model is intentionally arcade-like, and the AI instructor responds before or after a flight rather than inside the control loop. Future work could add time-based challenges, a landing zone, or richer debrief summaries after the core V3 experience has been evaluated with players.

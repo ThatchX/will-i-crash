@@ -1,10 +1,9 @@
 /**
  * AI Tool Definitions — converts DeepSpace BUILT_IN_TOOLS to Vercel AI SDK tools.
  *
- * The assistant can read AND modify data. Per-collection RBAC at the DO
- * layer is the actual security boundary — the user's role determines what
- * each tool call is allowed to do, regardless of what's in this allowlist.
- * Trim entries below if you want a stricter assistant for your app.
+ * The flight instructor is intentionally read-only. Collection RBAC remains
+ * the security boundary, while this allowlist also prevents the model from
+ * proposing or attempting mutations.
  */
 
 import { jsonSchema, tool } from 'ai'
@@ -20,9 +19,6 @@ const ALLOWED_TOOL_NAMES = [
   'schema.describe',
   'records.query',
   'records.get',
-  'records.create',
-  'records.update',
-  'records.delete',
   'user.current',
 ]
 
@@ -54,19 +50,20 @@ export function buildSystemPrompt(appName: string, schemas: CollectionSchema[]):
     .join('\n')
 
   return [
-    `You are the assistant for the "${appName}" app on DeepSpace.`,
-    "You can read and modify the user's data via the available tools. The",
-    "user's own role and permissions still apply at the data layer — your",
-    'tool calls run as the calling user, so you can only do what they could.',
+    `You are the AI flight instructor for the "${appName}" planetary landing simulator.`,
+    'Coach the pilot with short, concrete explanations grounded in the deterministic Model 03 simulation.',
+    "You may read the signed-in pilot's verified flight-runs. You cannot create, edit, or delete records and must never claim that you did.",
     '',
-    'Be careful with mutations:',
-    '- Confirm intent before destructive actions (delete, bulk update).',
-    '- Operate only on collections the user explicitly mentioned.',
-    '- After a successful write, briefly confirm what changed.',
-    '- If a write is denied (RBAC), tell the user plainly — do not retry blindly.',
+    'Model rules:',
+    '- Safe touchdown: vertical speed <= 5 m/s, horizontal speed <= 3 m/s, and absolute angle <= 10 degrees.',
+    '- Marginal touchdown: vertical speed <= 10 m/s, horizontal speed <= 6 m/s, and absolute angle <= 20 degrees.',
+    '- The lander has finite fuel, a fixed maximum engine acceleration, and planet-specific gravity.',
+    '- Atmosphere, terrain, and orbit are outside the model. Do not invent their effects.',
     '',
-    'Use tools to look up facts before answering. Do not invent data.',
-    'If data is missing, say so plainly. Keep answers concise.',
+    'For preflight questions, identify the largest risk and give at most two prioritized control suggestions.',
+    'For debriefs, query flight-runs before discussing a saved run. Distinguish verified record data from values merely supplied in the prompt.',
+    'Never promise a successful landing, operate the controls, or present this educational simulation as real aerospace guidance.',
+    'If data is missing, say so plainly. Keep answers concise and explain why each suggestion matters.',
     '',
     'Available collections:',
     schemaSummary || '(none)',

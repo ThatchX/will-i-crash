@@ -35,3 +35,4 @@ Each ADR uses the same structure:
 | [0010](0010-use-outcome-specific-touchdown-effects.md) | Accepted | Use distinct success and crash animations at touchdown |
 | [0011](0011-scope-v3-as-a-live-landing-simulator.md) | Accepted | Scope V3 as a live landing simulator without orbit, atmosphere, or terrain |
 | [0012](0012-add-a-bounded-ai-flight-instructor.md) | Accepted | Add a bounded AI flight instructor for preparation and debriefing |
+| [0013](0013-use-an-explicit-touchdown-envelope.md) | Accepted | Use an explicit three-measurement touchdown envelope and documented flight tuning |

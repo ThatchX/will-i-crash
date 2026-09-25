@@ -250,6 +250,13 @@
   transition: top 300ms ease-out, transform 300ms ease-out;
 }
 
+.live-lander {
+  transform: translateX(-50%) rotate(var(--lander-tilt));
+  transform-origin: 50% 45%;
+  transition: left 45ms linear, top 45ms linear, transform 45ms linear;
+  will-change: left, top, transform;
+}
+
 .lander-running,
 .lander-complete {
   /* The SVG's landing feet sit 80px below its top. The surface begins 76px
@@ -418,6 +425,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .lander,
+  .live-lander,
   .lander-touchdown,
   .success-ring,
   .touchdown-spark,

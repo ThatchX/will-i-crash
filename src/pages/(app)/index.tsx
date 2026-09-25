@@ -1,5 +1,5 @@
-import LandingConsole from '@/features/landing/LandingConsole'
+import LiveFlightConsole from '@/features/landing/LiveFlightConsole'
 
 export default function PlanetaryDescentPage() {
-  return <LandingConsole />
+  return <LiveFlightConsole />
 }

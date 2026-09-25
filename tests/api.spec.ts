@@ -13,14 +13,16 @@ test.describe('API tests', () => {
     // If the app loaded and connected, the WS endpoint works
   })
 
-  test('descent action requires an authenticated bearer token', async ({ request }) => {
-    const response = await request.post('/api/actions/runDescent', {
+  test('flight completion requires an authenticated bearer token', async ({ request }) => {
+    const response = await request.post('/api/actions/completeFlight', {
       data: {
-        planetId: 'earth',
-        heightMeters: 100,
-        descentSpeedMetersPerSecond: 10,
-        enginePowerPercent: 100,
-        tiltDegrees: 0,
+        initial: {
+          planetId: 'earth',
+          altitudeMeters: 50,
+          verticalSpeedMetersPerSecond: 60,
+          horizontalSpeedMetersPerSecond: 0,
+        },
+        commands: [{ tick: 0, throttlePercent: 0, rotationDirection: 0 }],
       },
     })
     expect(response.status()).toBe(401)

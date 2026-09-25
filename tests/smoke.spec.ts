@@ -6,9 +6,9 @@ test.describe('Smoke tests', () => {
     const errors = captureConsoleErrors(page)
     await page.goto('/')
     await expect(page.getByTestId('app-navigation')).toBeVisible({ timeout: 15_000 })
-    await expect(page.getByRole('heading', { name: 'Choose a world. Try to land.' })).toBeVisible()
-    await expect(page.getByTestId('descent-stage')).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Run descent' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'You have the controls.' })).toBeVisible()
+    await expect(page.getByTestId('flight-stage')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Begin flight' })).toBeVisible()
     await expect(page.getByTestId('planet-earth')).toHaveAttribute('aria-pressed', 'true')
     expect(errors).toEqual([])
   })
@@ -32,7 +32,7 @@ test.describe('Smoke tests', () => {
   test('legacy home URL returns to the one-page simulator', async ({ page }) => {
     await page.goto('/home')
     await expect(page).toHaveURL(/\/$/)
-    await expect(page.getByTestId('descent-stage')).toBeVisible()
+    await expect(page.getByTestId('flight-stage')).toBeVisible()
   })
 
   test('unknown route shows 404', async ({ page }) => {
