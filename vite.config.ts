@@ -7,6 +7,7 @@ import checker from 'vite-plugin-checker'
 import { deepspaceBuild } from 'deepspace/build'
 
 const appDir = fileURLToPath(new URL('.', import.meta.url))
+const runDevChecker = process.env.SKIP_DEV_CHECKER !== '1'
 
 export default defineConfig({
   plugins: [
@@ -25,12 +26,13 @@ export default defineConfig({
     // during `deepspace dev start` and fails the build during `deepspace deploy`.
     // That stops the cryptic "Minified React error #310 / #300" crash before
     // it can ship.
-    checker({
-      eslint: {
-        lintCommand: 'eslint .',
-        useFlatConfig: true,
-      },
-    }),
+    runDevChecker &&
+      checker({
+        eslint: {
+          lintCommand: 'eslint .',
+          useFlatConfig: true,
+        },
+      }),
   ],
   resolve: {
     alias: {
