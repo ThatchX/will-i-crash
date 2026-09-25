@@ -32,6 +32,10 @@ The eight planet gravities are stored as named configuration data. The model ass
 - A private immutable `descent-attempts` collection stores model inputs and outputs. Users can read and delete only their own attempts.
 - Realtime records synchronize the most recent 10 attempts across the pilot's signed-in sessions.
 
+## Engineering decisions
+
+The reasoning behind the product, physics model, interface, data, and DeepSpace choices is recorded in the [architecture decision log](docs/decisions/README.md). New material decisions should be added there when they are made so the implementation and its rationale stay connected.
+
 ## Run locally
 
 Use a supported Node release (22.15+, 24, or 26), then:

@@ -49,6 +49,14 @@ npx deepspace add --list   # list optional features (messaging, etc.)
 npx deepspace add <feature>
 ```
 
+## Decision records
+
+Record material product, architecture, model, data, security, and platform
+decisions in `docs/decisions/`. Add or supersede an ADR in the same change as
+the decision, and update `docs/decisions/README.md`. Do not rewrite accepted
+ADRs to hide an earlier choice; preserve the record and point to the newer ADR.
+Routine implementation details do not need an ADR.
+
 This starter does not register local agent tool routes by default. To expose
 the app's tools to a local assistant, add
 `registerAgent(app, { tools: buildTools, inApp: false })` in `worker.ts`
