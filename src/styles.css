@@ -266,18 +266,164 @@
   transition-duration: 0ms;
 }
 
+.lander-touchdown {
+  transform-origin: 50% 82%;
+}
+
+.lander-success .lander-touchdown {
+  animation: landing-settle 720ms cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+
+.lander-crash .lander-touchdown {
+  animation: crash-settle 760ms cubic-bezier(0.3, 0.02, 0.2, 1) both;
+}
+
+.lander-marginal .lander-touchdown {
+  animation: marginal-settle 520ms ease-out both;
+}
+
+.touchdown-effects {
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.success-ring,
+.impact-burst,
+.impact-flash {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 9999px;
+}
+
+.success-ring {
+  width: 96px;
+  height: 38px;
+  border: 2px solid color-mix(in srgb, var(--color-success) 78%, white);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--color-success) 58%, transparent);
+  animation: success-ring 900ms ease-out both;
+}
+
+.success-ring-delayed {
+  animation-delay: 130ms;
+}
+
+.touchdown-spark,
+.impact-debris {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+}
+
+.touchdown-spark {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-success) 55%, white);
+  box-shadow: 0 0 9px var(--color-success);
+  animation: touchdown-spark 720ms ease-out both;
+}
+
+.spark-1 { --effect-x: -58px; --effect-y: -30px; animation-delay: 40ms; }
+.spark-2 { --effect-x: -34px; --effect-y: -48px; animation-delay: 100ms; }
+.spark-3 { --effect-x: 0px; --effect-y: -54px; animation-delay: 20ms; }
+.spark-4 { --effect-x: 34px; --effect-y: -48px; animation-delay: 90ms; }
+.spark-5 { --effect-x: 58px; --effect-y: -30px; animation-delay: 50ms; }
+.spark-6 { --effect-x: 0px; --effect-y: -30px; animation-delay: 150ms; }
+
+.impact-flash {
+  width: 104px;
+  height: 54px;
+  background: radial-gradient(circle, #fff7c2 0 10%, #ff9a3d 28%, rgba(239, 68, 68, 0.72) 48%, transparent 72%);
+  filter: blur(1px);
+  animation: impact-flash 520ms ease-out both;
+}
+
 .impact-burst {
-  animation: impact-burst 700ms ease-out both;
+  width: 112px;
+  height: 48px;
+  border: 2px solid color-mix(in srgb, var(--color-destructive) 78%, #ffb347);
+  animation: impact-burst 760ms ease-out both;
+}
+
+.impact-debris {
+  width: 5px;
+  height: 10px;
+  border-radius: 2px;
+  background: #ffb347;
+  box-shadow: 0 0 7px rgba(239, 68, 68, 0.8);
+  animation: impact-debris 760ms cubic-bezier(0.12, 0.62, 0.35, 1) both;
+}
+
+.debris-1 { --effect-x: -72px; --effect-y: -34px; --effect-rotate: -70deg; }
+.debris-2 { --effect-x: -45px; --effect-y: -62px; --effect-rotate: -35deg; animation-delay: 35ms; }
+.debris-3 { --effect-x: -14px; --effect-y: -72px; --effect-rotate: -10deg; animation-delay: 70ms; }
+.debris-4 { --effect-x: 22px; --effect-y: -70px; --effect-rotate: 24deg; animation-delay: 25ms; }
+.debris-5 { --effect-x: 50px; --effect-y: -56px; --effect-rotate: 48deg; animation-delay: 80ms; }
+.debris-6 { --effect-x: 74px; --effect-y: -30px; --effect-rotate: 76deg; animation-delay: 45ms; }
+
+@keyframes landing-settle {
+  0% { transform: translateY(0); filter: brightness(1); }
+  32% { transform: translateY(-10px); filter: brightness(1.25); }
+  62% { transform: translateY(0); filter: brightness(1.12); }
+  80% { transform: translateY(-3px); }
+  100% { transform: translateY(0); filter: brightness(1); }
+}
+
+@keyframes marginal-settle {
+  0% { transform: translateY(0) rotate(0); }
+  38% { transform: translateY(-5px) rotate(-2deg); }
+  68% { transform: translateY(0) rotate(1deg); }
+  100% { transform: translateY(0) rotate(0); }
+}
+
+@keyframes crash-settle {
+  0% { transform: translate(0, 0) rotate(0) scaleY(1); }
+  14% { transform: translate(-8px, 1px) rotate(-5deg) scaleY(0.96); }
+  28% { transform: translate(8px, 2px) rotate(6deg) scaleY(0.94); }
+  42% { transform: translate(-6px, 3px) rotate(-4deg) scaleY(0.95); }
+  58% { transform: translate(5px, 4px) rotate(5deg) scaleY(0.94); }
+  74% { transform: translate(-3px, 5px) rotate(7deg) scaleY(0.94); }
+  100% { transform: translate(0, 6px) rotate(11deg) scaleY(0.93); }
+}
+
+@keyframes success-ring {
+  from { opacity: 0.9; transform: translate(-50%, -50%) scale(0.25); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(1.55); }
+}
+
+@keyframes touchdown-spark {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--effect-x)), calc(-50% + var(--effect-y))) scale(1); }
+}
+
+@keyframes impact-flash {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(0.25); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(1.35); }
 }
 
 @keyframes impact-burst {
-  from { opacity: 0.9; transform: translateX(-50%) scale(0.2); }
-  to { opacity: 0; transform: translateX(-50%) scale(1.8); }
+  from { opacity: 0.95; transform: translate(-50%, -50%) scale(0.2); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(1.9); }
+}
+
+@keyframes impact-debris {
+  0% { opacity: 1; transform: translate(-50%, -50%) rotate(0) scale(0.5); }
+  75% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--effect-x)), calc(-50% + var(--effect-y))) rotate(var(--effect-rotate)) scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .lander,
-  .impact-burst {
+  .lander-touchdown,
+  .success-ring,
+  .touchdown-spark,
+  .impact-flash,
+  .impact-burst,
+  .impact-debris {
     animation-duration: 1ms;
     transition-duration: 1ms;
   }

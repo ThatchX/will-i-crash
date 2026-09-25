@@ -277,10 +277,18 @@ export default function LandingConsole() {
   const brakingZoneOffsetPixels = assessment
     ? Math.min(Math.max(assessment.stoppingRatio ?? 1, 0), 1) * 180
     : 0
+  const touchdownClass =
+    phase !== 'complete' || !assessment
+      ? ''
+      : assessment.outcome === 'SAFE_APPROACH'
+        ? 'lander-success'
+        : assessment.outcome === 'CRASH_LIKELY'
+          ? 'lander-crash'
+          : 'lander-marginal'
   const landerStyle = {
     '--lander-tilt': `${telemetry.tiltDegrees}deg`,
     '--planet-accent': art.accent,
-    '--engine-power': Math.max(0.08, telemetry.enginePowerPercent / 100),
+    '--engine-power': phase === 'complete' ? 0 : Math.max(0.08, telemetry.enginePowerPercent / 100),
   } as CSSProperties
 
   return (
@@ -355,12 +363,31 @@ export default function LandingConsole() {
               data-testid="lander"
               className={`lander absolute left-1/2 z-20 motion-reduce:transition-none ${
                 phase === 'running' ? 'lander-running' : ''
-              } ${phase === 'complete' ? 'lander-complete' : ''}`}
+              } ${phase === 'complete' ? 'lander-complete' : ''} ${touchdownClass}`}
               style={landerStyle}
               aria-label={`Lander above ${planet.name}`}
             >
-              <LanderGraphic />
+              <div className="lander-touchdown">
+                <LanderGraphic />
+              </div>
             </div>
+
+            {phase === 'complete' && assessment?.outcome === 'SAFE_APPROACH' && (
+              <div
+                data-testid="success-animation"
+                className="touchdown-effects absolute bottom-[68px] left-1/2 z-30"
+                aria-hidden
+              >
+                <span className="success-ring" />
+                <span className="success-ring success-ring-delayed" />
+                <span className="touchdown-spark spark-1" />
+                <span className="touchdown-spark spark-2" />
+                <span className="touchdown-spark spark-3" />
+                <span className="touchdown-spark spark-4" />
+                <span className="touchdown-spark spark-5" />
+                <span className="touchdown-spark spark-6" />
+              </div>
+            )}
 
             {assessment && assessment.stoppingDistanceMeters !== null && (
               <div
@@ -372,7 +399,20 @@ export default function LandingConsole() {
             )}
 
             {phase === 'complete' && assessment?.outcome === 'CRASH_LIKELY' && (
-              <div className="impact-burst absolute bottom-[50px] left-1/2 z-30 size-28 -translate-x-1/2 rounded-full border-2 border-destructive/70" aria-hidden />
+              <div
+                data-testid="crash-animation"
+                className="touchdown-effects absolute bottom-[64px] left-1/2 z-30"
+                aria-hidden
+              >
+                <span className="impact-flash" />
+                <span className="impact-burst" />
+                <span className="impact-debris debris-1" />
+                <span className="impact-debris debris-2" />
+                <span className="impact-debris debris-3" />
+                <span className="impact-debris debris-4" />
+                <span className="impact-debris debris-5" />
+                <span className="impact-debris debris-6" />
+              </div>
             )}
 
             <div
