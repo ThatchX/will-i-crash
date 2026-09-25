@@ -232,3 +232,45 @@
     touch-action: manipulation;
   }
 }
+
+.planet-slider {
+  height: 0.35rem;
+  cursor: pointer;
+}
+
+.planet-slider:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.lander {
+  transform: translateX(-50%) translateY(var(--lander-y)) rotate(var(--lander-tilt));
+  transform-origin: 50% 45%;
+  transition: transform 300ms ease-out;
+}
+
+.lander-running {
+  transition-duration: 1800ms;
+  transition-timing-function: cubic-bezier(0.28, 0.02, 0.16, 1);
+}
+
+.lander-complete {
+  transition-duration: 0ms;
+}
+
+.impact-burst {
+  animation: impact-burst 700ms ease-out both;
+}
+
+@keyframes impact-burst {
+  from { opacity: 0.9; transform: translateX(-50%) scale(0.2); }
+  to { opacity: 0; transform: translateX(-50%) scale(1.8); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lander,
+  .impact-burst {
+    animation-duration: 1ms;
+    transition-duration: 1ms;
+  }
+}

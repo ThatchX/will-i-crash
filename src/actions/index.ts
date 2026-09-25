@@ -2,6 +2,7 @@ import type { ActionHandler } from 'deepspace/worker'
 import type { Env } from '../../worker'
 import {
   assessLanding,
+  isPlanetId,
   LANDING_MODEL_VERSION,
   type LandingCheckRecord,
   type LandingTelemetry,
@@ -9,6 +10,7 @@ import {
 
 const assessLandingAction: ActionHandler<Env> = async ({ userId, params, tools }) => {
   const telemetry: LandingTelemetry = {
+    planetId: isPlanetId(params.planetId) ? params.planetId : ('unknown' as LandingTelemetry['planetId']),
     heightMeters: numberParam(params.heightMeters),
     descentSpeedMetersPerSecond: numberParam(params.descentSpeedMetersPerSecond),
     enginePowerPercent: numberParam(params.enginePowerPercent),
@@ -41,9 +43,10 @@ const assessLandingAction: ActionHandler<Env> = async ({ userId, params, tools }
     stoppingDistanceMeters: assessment.stoppingDistanceMeters ?? undefined,
     altitudeMarginMeters: assessment.altitudeMarginMeters ?? undefined,
     requiredThrottlePercent: assessment.requiredThrottlePercent ?? undefined,
+    powerAboveMinimumPercent: assessment.powerAboveMinimumPercent ?? undefined,
     stoppingRatio: assessment.stoppingRatio ?? undefined,
   }
-  const created = await tools.create<Record<string, unknown>>('landing-checks', {
+  const created = await tools.create<Record<string, unknown>>('descent-attempts', {
     ...storedRecord,
   })
   if (!created.success) return created
@@ -62,5 +65,5 @@ function numberParam(value: unknown): number {
 }
 
 export const actions: Record<string, ActionHandler<Env>> = {
-  assessLanding: assessLandingAction,
+  runDescent: assessLandingAction,
 }

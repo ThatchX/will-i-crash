@@ -45,7 +45,7 @@
   --color-shell-panel: #ffffff;
 }
 
-[data-theme="lunar"] {
+[data-theme="orbital"] {
   color-scheme: dark;
   --color-background: #070b14;
   --color-foreground: #f2f4f8;

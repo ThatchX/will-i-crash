@@ -4,12 +4,12 @@
   To switch themes, change `data-theme` to any id defined in src/themes.ts.
   Color values per theme live in src/themes.css.
 -->
-<html lang="en" data-theme="lunar">
+<html lang="en" data-theme="orbital">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.ico" />
-    <meta name="description" content="An explainable lunar landing risk checker." />
+    <meta name="description" content="An interactive planetary landing sandbox with explainable descent physics." />
     <title>Will I Crash?</title>
     <!--
       First-paint background, keyed to the data-theme attribute above.
@@ -21,7 +21,7 @@
     <style>
       html { background-color: #0a0a0a; color-scheme: dark; }
       html[data-theme="paper"] { background-color: #ffffff; color-scheme: light; }
-      html[data-theme="lunar"] { background-color: #070b14; color-scheme: dark; }
+      html[data-theme="orbital"] { background-color: #070b14; color-scheme: dark; }
       /* Add one line per theme you create, mirroring its --color-background. */
     </style>
   </head>

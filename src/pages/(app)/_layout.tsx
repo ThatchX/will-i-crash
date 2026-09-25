@@ -2,7 +2,7 @@
  * Dynamic app boundary — the auth + realtime data layer.
  *
  * `(app)` is a Generouted route group: the parentheses mean it does NOT appear
- * in the URL, so (app)/home.tsx is served at /home. Every page under this
+ * in the URL, so (app)/index.tsx is served at /. Every page under this
  * folder is wrapped in the DeepSpace providers below, so it may call `useAuth`,
  * `useQuery`, `useMutations`, presence/Yjs hooks, etc.
  *

@@ -18,9 +18,9 @@
 
 export const THEMES = [
   {
-    id: 'lunar',
-    label: 'Lunar',
-    description: 'Deep navy surfaces with an amber guidance accent.',
+    id: 'orbital',
+    label: 'Orbital',
+    description: 'Deep space surfaces with an amber guidance accent.',
   },
   {
     id: 'slate',
@@ -38,9 +38,9 @@ export type ThemeId = (typeof THEMES)[number]['id']
 
 /** Read the currently active theme id from <html data-theme>. */
 export function getActiveTheme(): ThemeId {
-  if (typeof document === 'undefined') return 'lunar'
+  if (typeof document === 'undefined') return 'orbital'
   const id = document.documentElement.getAttribute('data-theme') as ThemeId | null
-  return id ?? 'lunar'
+  return id ?? 'orbital'
 }
 
 /** Look up a theme entry by id, or fall back to the first theme. */

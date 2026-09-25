@@ -1,10 +1,20 @@
 import type { CollectionSchema } from 'deepspace/schema'
 
-export const landingChecksSchema: CollectionSchema = {
-  name: 'landing-checks',
+export const descentAttemptsSchema: CollectionSchema = {
+  name: 'descent-attempts',
   columns: [
     { name: 'ownerId', storage: 'text', interpretation: 'plain', required: true, userBound: true, immutable: true },
     { name: 'modelVersion', storage: 'number', interpretation: 'plain', required: true, immutable: true },
+    {
+      name: 'planetId',
+      storage: 'text',
+      interpretation: {
+        kind: 'select',
+        options: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'],
+      },
+      required: true,
+      immutable: true,
+    },
     { name: 'heightMeters', storage: 'number', interpretation: 'plain', required: true, immutable: true },
     { name: 'descentSpeedMetersPerSecond', storage: 'number', interpretation: 'plain', required: true, immutable: true },
     { name: 'enginePowerPercent', storage: 'number', interpretation: 'plain', required: true, immutable: true },
@@ -26,11 +36,13 @@ export const landingChecksSchema: CollectionSchema = {
       required: true,
       immutable: true,
     },
+    { name: 'planetGravity', storage: 'number', interpretation: 'plain', required: true, immutable: true },
     { name: 'verticalEngineAcceleration', storage: 'number', interpretation: 'plain', required: true, immutable: true },
     { name: 'netBrakingAcceleration', storage: 'number', interpretation: 'plain', required: true, immutable: true },
     { name: 'stoppingDistanceMeters', storage: 'number', interpretation: 'plain', immutable: true },
     { name: 'altitudeMarginMeters', storage: 'number', interpretation: 'plain', immutable: true },
     { name: 'requiredThrottlePercent', storage: 'number', interpretation: 'plain', immutable: true },
+    { name: 'powerAboveMinimumPercent', storage: 'number', interpretation: 'plain', immutable: true },
     { name: 'stoppingRatio', storage: 'number', interpretation: 'plain', immutable: true },
     { name: 'explanation', storage: 'text', interpretation: 'plain', required: true, immutable: true },
   ],

@@ -6,44 +6,43 @@ test.skip(
   `Needs 2 usable test accounts, found ${usableTestAccounts}. Create or recover test accounts with the DeepSpace CLI.`,
 )
 
-test('a signed-in operator can assess and save a landing', async ({ users }) => {
-  const [operator] = await users(1)
-  await operator.page.goto('/home')
-  await expect(operator.page.getByRole('heading', { name: 'Will I crash?' })).toBeVisible({ timeout: 15_000 })
+test('a signed-in pilot can run and save a planetary descent', async ({ users }) => {
+  const [pilot] = await users(1)
+  await pilot.page.goto('/')
+  await expect(pilot.page.getByRole('heading', { name: 'Choose a world. Try to land.' })).toBeVisible({ timeout: 15_000 })
 
-  await operator.page.getByRole('button', { name: 'Safe' }).click()
-  await operator.page.getByTestId('check-landing').click()
+  await pilot.page.getByTestId('run-descent').click()
 
-  await expect(operator.page.getByTestId('landing-result')).toContainText('Safe approach')
-  await expect(operator.page.getByTestId('landing-history')).toContainText('100 m high')
+  await expect(pilot.page.getByTestId('landing-result')).toContainText('Landing secured')
+  await expect(pilot.page.getByTestId('landing-history')).toContainText('Earth')
 })
 
-test('saved checks stay private to their owner', async ({ users }) => {
+test('saved attempts stay private to their pilot', async ({ users }) => {
   const [a, b] = await users(2)
   const uniqueHeight = String(300 + (Date.now() % 500))
-  await Promise.all([a.page.goto('/home'), b.page.goto('/home')])
+  await Promise.all([a.page.goto('/'), b.page.goto('/')])
   await Promise.all([
-    expect(a.page.getByRole('heading', { name: 'Will I crash?' })).toBeVisible({ timeout: 15_000 }),
-    expect(b.page.getByRole('heading', { name: 'Will I crash?' })).toBeVisible({ timeout: 15_000 }),
+    expect(a.page.getByTestId('descent-stage')).toBeVisible({ timeout: 15_000 }),
+    expect(b.page.getByTestId('descent-stage')).toBeVisible({ timeout: 15_000 }),
   ])
 
   await a.page.getByTestId('landing-heightMeters').fill(uniqueHeight)
-  await a.page.getByTestId('check-landing').click()
-  await expect(a.page.getByTestId('landing-history')).toContainText(`${uniqueHeight} m high`)
-  await expect(b.page.getByTestId('landing-history')).not.toContainText(`${uniqueHeight} m high`)
+  await a.page.getByTestId('run-descent').click()
+  await expect(a.page.getByTestId('landing-history')).toContainText(`${uniqueHeight} m`)
+  await expect(b.page.getByTestId('landing-history')).not.toContainText(`${uniqueHeight} m`)
 })
 
-test('history updates across two sessions for the same user', async ({ users }) => {
-  const [operator] = await users(1)
-  const secondPage = await operator.context.newPage()
+test('flight log updates across two sessions for the same pilot', async ({ users }) => {
+  const [pilot] = await users(1)
+  const secondPage = await pilot.context.newPage()
   const uniqueHeight = String(800 + (Date.now() % 100))
-  await Promise.all([operator.page.goto('/home'), secondPage.goto('/home')])
+  await Promise.all([pilot.page.goto('/'), secondPage.goto('/')])
   await Promise.all([
-    expect(operator.page.getByRole('heading', { name: 'Will I crash?' })).toBeVisible({ timeout: 15_000 }),
-    expect(secondPage.getByRole('heading', { name: 'Will I crash?' })).toBeVisible({ timeout: 15_000 }),
+    expect(pilot.page.getByTestId('descent-stage')).toBeVisible({ timeout: 15_000 }),
+    expect(secondPage.getByTestId('descent-stage')).toBeVisible({ timeout: 15_000 }),
   ])
 
-  await operator.page.getByTestId('landing-heightMeters').fill(uniqueHeight)
-  await operator.page.getByTestId('check-landing').click()
-  await expect(secondPage.getByTestId('landing-history')).toContainText(`${uniqueHeight} m high`)
+  await pilot.page.getByTestId('landing-heightMeters').fill(uniqueHeight)
+  await pilot.page.getByTestId('run-descent').click()
+  await expect(secondPage.getByTestId('landing-history')).toContainText(`${uniqueHeight} m`)
 })
