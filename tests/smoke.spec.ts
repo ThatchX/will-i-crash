@@ -23,6 +23,7 @@ test.describe('Smoke tests', () => {
     await page.goto('/')
     await waitForApp(page)
     await expect(page.getByTestId('static-landing')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Know whether you can stop before the surface.' })).toBeVisible()
     expect(errors).toEqual([])
   })
 
@@ -44,6 +45,7 @@ test.describe('Smoke tests', () => {
   test('dynamic app boundary mounts on /home', async ({ page }) => {
     await page.goto('/home')
     await expect(page.getByTestId('app-navigation')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByRole('heading', { name: 'Sign in to continue' })).toBeVisible()
   })
 
   test('sign-in button visible when logged out', async ({ page }) => {

@@ -44,3 +44,29 @@
   --color-shell: #fafafa;
   --color-shell-panel: #ffffff;
 }
+
+[data-theme="lunar"] {
+  color-scheme: dark;
+  --color-background: #070b14;
+  --color-foreground: #f2f4f8;
+  --color-card: #0d1422;
+  --color-card-foreground: #f2f4f8;
+  --color-popover: #101929;
+  --color-popover-foreground: #f2f4f8;
+  --color-primary: #f5a524;
+  --color-primary-foreground: #171006;
+  --color-secondary: #172133;
+  --color-secondary-foreground: #e8edf5;
+  --color-muted: #172133;
+  --color-muted-foreground: #95a3b9;
+  --color-accent: #202c40;
+  --color-accent-foreground: #ffffff;
+  --color-destructive: #fb5b65;
+  --color-destructive-foreground: #ffffff;
+  --color-border: rgba(148, 163, 184, 0.22);
+  --color-input: rgba(148, 163, 184, 0.28);
+  --color-ring: #f5a524;
+  --radius: 0.75rem;
+  --color-shell: #070b14;
+  --color-shell-panel: #0d1422;
+}

@@ -1,5 +1,6 @@
 /** App name — replaced by the CLI during scaffolding */
 export const APP_NAME = 'will-i-crash'
+export const APP_DISPLAY_NAME = 'Will I Crash?'
 
 /** Immutable app identity — data scope keys to this, so renames never
  *  strand your records.

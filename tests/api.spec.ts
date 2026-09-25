@@ -15,4 +15,16 @@ test.describe('API tests', () => {
     await page.waitForSelector('[data-testid="app-navigation"]', { timeout: 15000 })
     // If the app loaded and connected, the WS endpoint works
   })
+
+  test('landing assessment action requires an authenticated bearer token', async ({ request }) => {
+    const response = await request.post('/api/actions/assessLanding', {
+      data: {
+        heightMeters: 100,
+        descentSpeedMetersPerSecond: 10,
+        enginePowerPercent: 100,
+        tiltDegrees: 0,
+      },
+    })
+    expect(response.status()).toBe(401)
+  })
 })
