@@ -34,3 +34,4 @@ Each ADR uses the same structure:
 | [0009](0009-animate-every-descent-to-the-surface.md) | Accepted | Animate every completed descent from its start to the surface |
 | [0010](0010-use-outcome-specific-touchdown-effects.md) | Accepted | Use distinct success and crash animations at touchdown |
 | [0011](0011-scope-v3-as-a-live-landing-simulator.md) | Accepted | Scope V3 as a live landing simulator without orbit, atmosphere, or terrain |
+| [0012](0012-add-a-bounded-ai-flight-instructor.md) | Accepted | Add a bounded AI flight instructor for preparation and debriefing |
