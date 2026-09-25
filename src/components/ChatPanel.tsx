@@ -244,7 +244,7 @@ export function ChatPanel({
 
   return (
     <div
-      className={`relative flex h-full min-h-0 flex-col bg-background text-foreground ${textSize} ${className ?? ''}`}
+      className={`relative flex h-full min-h-0 flex-col overflow-hidden bg-background text-foreground ${textSize} ${className ?? ''}`}
     >
       {header && <div className="shrink-0">{header}</div>}
 

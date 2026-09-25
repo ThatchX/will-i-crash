@@ -79,7 +79,7 @@ export function EmptyState({
   onPick: (prompt: string) => void
 }) {
   return (
-    <div className="mx-auto flex h-full max-w-[28rem] flex-col items-start justify-center gap-4 px-2">
+    <div className="mx-auto flex h-full w-full min-w-0 max-w-[28rem] flex-col items-start justify-center gap-4 px-2">
       <div className="space-y-1">
         <h2 className="text-[17px] font-medium tracking-tight text-foreground">
           Ready for preflight
@@ -88,7 +88,7 @@ export function EmptyState({
           I can explain the model and read your verified flights for a focused debrief.
         </p>
       </div>
-      <div className="flex flex-col gap-0.5 pt-2">
+      <div className="flex w-full min-w-0 flex-col gap-0.5 pt-2">
         <div className="pb-1 text-[10.5px] font-medium tracking-[0.08em] uppercase text-muted-foreground">
           Try
         </div>
@@ -97,10 +97,10 @@ export function EmptyState({
             key={prompt}
             type="button"
             onClick={() => onPick(prompt)}
-            className="group flex items-center gap-2 py-1 text-left text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+            className="group flex w-full min-w-0 items-center gap-2 py-1 text-left text-[13px] text-muted-foreground transition-colors hover:text-foreground"
           >
             <span className="h-px w-3 shrink-0 bg-border transition-colors group-hover:bg-muted-foreground" />
-            <span className="truncate">{prompt}</span>
+            <span className="min-w-0 truncate">{prompt}</span>
           </button>
         ))}
       </div>

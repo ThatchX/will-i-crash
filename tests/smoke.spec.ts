@@ -9,6 +9,7 @@ test.describe('Smoke tests', () => {
     await expect(page.getByRole('heading', { name: 'You have the controls.' })).toBeVisible()
     await expect(page.getByTestId('flight-stage')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Begin flight' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Ask instructor' })).toBeVisible()
     await expect(page.getByTestId('planet-earth')).toHaveAttribute('aria-pressed', 'true')
     expect(errors).toEqual([])
   })
@@ -27,6 +28,13 @@ test.describe('Smoke tests', () => {
     await page.goto('/')
     await expect(page.getByTestId('nav-sign-in-button')).toBeVisible({ timeout: 15_000 })
     await expect(page.getByTestId('nav-user-name')).toHaveCount(0)
+  })
+
+  test('persistent instructor button opens the chat window', async ({ page }) => {
+    await page.goto('/')
+    await page.getByRole('button', { name: 'Ask instructor' }).click()
+    await expect(page.getByRole('dialog', { name: 'AI flight instructor' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Close flight instructor' })).toBeVisible()
   })
 
   test('legacy home URL returns to the one-page simulator', async ({ page }) => {

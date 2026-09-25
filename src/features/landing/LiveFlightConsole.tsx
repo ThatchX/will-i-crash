@@ -26,6 +26,7 @@ import {
   ShieldCheck,
   Trash2,
   TriangleAlert,
+  X,
   Zap,
 } from 'lucide-react'
 import { Button, Input, Label, useToast } from '@/components/ui'
@@ -154,6 +155,11 @@ export default function LiveFlightConsole() {
   const [verifiedResult, setVerifiedResult] = useState<FlightResult | null>(null)
   const [saving, setSaving] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [instructorOpen, setInstructorOpen] = useState(false)
+  const [instructorConversation, setInstructorConversation] = useState<{
+    userId: string
+    chatId: string
+  } | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [stageHeight, setStageHeight] = useState(520)
   const stageRef = useRef<HTMLElement>(null)
@@ -190,6 +196,15 @@ export default function LiveFlightConsole() {
     observer.observe(element)
     return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    if (!instructorOpen) return
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setInstructorOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [instructorOpen])
 
   const persistCompletedFlight = useCallback(async (finalState: FlightState) => {
     if (!finalState.result || persistedTickRef.current === finalState.tick) return
@@ -519,37 +534,63 @@ export default function LiveFlightConsole() {
           )}
         </section>
 
-        <section className="mt-5 overflow-hidden rounded-2xl border border-border bg-card/55" data-testid="flight-instructor">
-          {isSignedIn && userId ? (
-            <div className="h-[520px]">
-              <ChatPanel
-                chatId={null}
-                userId={userId}
-                compact
-                className="bg-transparent"
-                emptyStatePrompts={[
-                  `Give me a short preflight briefing for ${planet.name} with ${formatNumber(initial.altitudeMeters)} m altitude, ${formatNumber(initial.verticalSpeedMetersPerSecond)} m/s downward speed, and ${formatSigned(initial.horizontalSpeedMetersPerSecond)} m/s horizontal drift.`,
-                  'Debrief my most recent verified flight and give me two things to practice.',
-                  'Explain how throttle, tilt, and fuel interact in this simulator.',
-                ]}
-                header={<div className="flex items-center gap-3 border-b border-border px-5 py-4"><span className="rounded-lg bg-primary/15 p-2 text-primary"><Bot className="size-5" aria-hidden /></span><div><h2 className="font-semibold">AI flight instructor</h2><p className="text-xs text-muted-foreground">Preflight guidance and verified-flight debriefs</p></div></div>}
-              />
-            </div>
-          ) : (
-            <div className="flex min-h-44 flex-col items-center justify-center px-6 text-center">
-              <Bot className="size-7 text-primary" aria-hidden />
-              <h2 className="mt-3 font-semibold">AI flight instructor</h2>
-              <p className="mt-1 max-w-md text-sm text-muted-foreground">Sign in to get a preflight briefing or a debrief grounded in your verified flights.</p>
-              <Button className="mt-4" onClick={() => setShowAuthModal(true)}>Sign in for coaching</Button>
-            </div>
-          )}
-        </section>
-
         <footer className="px-2 py-6 text-center text-xs leading-5 text-muted-foreground">Deterministic 2D model: fixed-step gravity, thrust, horizontal motion, and finite fuel. Atmosphere, terrain, and orbit are intentionally omitted.</footer>
       </main>
+
+      {!instructorOpen && (
+        <Button
+          type="button"
+          size="lg"
+          data-testid="open-flight-instructor"
+          className="fixed bottom-5 right-5 z-40 rounded-full px-5 shadow-[0_14px_45px_rgba(0,0,0,.45)]"
+          onClick={() => setInstructorOpen(true)}
+        >
+          <Bot className="size-5" aria-hidden />
+          Ask instructor
+        </Button>
+      )}
+
+      {instructorOpen && (
+        <aside
+          role="dialog"
+          aria-labelledby="flight-instructor-title"
+          data-testid="flight-instructor"
+          className="fixed inset-x-3 bottom-3 z-50 h-[min(680px,calc(100vh-1.5rem))] overflow-hidden rounded-2xl border border-border bg-background shadow-[0_24px_90px_rgba(0,0,0,.58)] sm:inset-x-auto sm:bottom-5 sm:right-5 sm:h-[min(680px,calc(100vh-6rem))] sm:w-[420px]"
+        >
+          {isSignedIn && userId ? (
+            <ChatPanel
+              chatId={instructorConversation?.userId === userId ? instructorConversation.chatId : null}
+              userId={userId}
+              onChatCreated={(chatId) => setInstructorConversation({ userId, chatId })}
+              compact
+              className="bg-transparent"
+              emptyStatePrompts={[
+                `Give me a short preflight briefing for ${planet.name} with ${formatNumber(initial.altitudeMeters)} m altitude, ${formatNumber(initial.verticalSpeedMetersPerSecond)} m/s downward speed, and ${formatSigned(initial.horizontalSpeedMetersPerSecond)} m/s horizontal drift.`,
+                'Debrief my most recent verified flight and give me two things to practice.',
+                'Explain how throttle, tilt, and fuel interact in this simulator.',
+              ]}
+              header={<InstructorHeader onClose={() => setInstructorOpen(false)} />}
+            />
+          ) : (
+            <div className="flex h-full flex-col">
+              <InstructorHeader onClose={() => setInstructorOpen(false)} />
+              <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+                <Bot className="size-8 text-primary" aria-hidden />
+                <h3 className="mt-3 font-semibold">Sign in for coaching</h3>
+                <p className="mt-1 max-w-xs text-sm text-muted-foreground">Get a preflight briefing or a debrief grounded in your verified flights.</p>
+                <Button className="mt-4" onClick={() => setShowAuthModal(true)}>Sign in</Button>
+              </div>
+            </div>
+          )}
+        </aside>
+      )}
       {showAuthModal && <AuthOverlay onClose={() => setShowAuthModal(false)} />}
     </div>
   )
+}
+
+function InstructorHeader({ onClose }: { onClose: () => void }) {
+  return <div className="flex items-center gap-3 border-b border-border px-4 py-3.5"><span className="rounded-lg bg-primary/15 p-2 text-primary"><Bot className="size-5" aria-hidden /></span><div className="min-w-0 flex-1"><h2 id="flight-instructor-title" className="font-semibold">AI flight instructor</h2><p className="truncate text-xs text-muted-foreground">Preflight guidance and verified-flight debriefs</p></div><Button type="button" variant="ghost" size="icon" aria-label="Close flight instructor" onClick={onClose}><X className="size-4" aria-hidden /></Button></div>
 }
 
 function PreflightControls({ values, errors, accent, onChange, onReset, onStart, authReady }: {
