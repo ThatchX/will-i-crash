@@ -244,9 +244,17 @@
 }
 
 .lander {
-  transform: translateX(-50%) translateY(var(--lander-y)) rotate(var(--lander-tilt));
+  top: 70px;
+  transform: translateX(-50%) rotate(var(--lander-tilt));
   transform-origin: 50% 45%;
-  transition: transform 300ms ease-out;
+  transition: top 300ms ease-out, transform 300ms ease-out;
+}
+
+.lander-running,
+.lander-complete {
+  /* The SVG's landing feet sit 80px below its top. The surface begins 76px
+     above the stage bottom, so this places the feet exactly on the surface. */
+  top: calc(100% - 156px);
 }
 
 .lander-running {

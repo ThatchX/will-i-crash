@@ -274,11 +274,10 @@ export default function LandingConsole() {
     }
   }
 
-  const travelPixels = assessment
-    ? Math.min(Math.max(assessment.stoppingRatio ?? 1, 0), 1) * 248
+  const brakingZoneOffsetPixels = assessment
+    ? Math.min(Math.max(assessment.stoppingRatio ?? 1, 0), 1) * 180
     : 0
   const landerStyle = {
-    '--lander-y': `${phase === 'ready' ? 0 : travelPixels}px`,
     '--lander-tilt': `${telemetry.tiltDegrees}deg`,
     '--planet-accent': art.accent,
     '--engine-power': Math.max(0.08, telemetry.enginePowerPercent / 100),
@@ -354,7 +353,7 @@ export default function LandingConsole() {
 
             <div
               data-testid="lander"
-              className={`lander absolute left-1/2 top-[70px] z-20 motion-reduce:transition-none ${
+              className={`lander absolute left-1/2 z-20 motion-reduce:transition-none ${
                 phase === 'running' ? 'lander-running' : ''
               } ${phase === 'complete' ? 'lander-complete' : ''}`}
               style={landerStyle}
@@ -366,7 +365,7 @@ export default function LandingConsole() {
             {assessment && assessment.stoppingDistanceMeters !== null && (
               <div
                 className="absolute bottom-[78px] left-1/2 z-10 w-24 -translate-x-1/2 rounded-full border border-dashed border-white/35 bg-white/5 px-2 py-1 text-center text-[10px] uppercase tracking-widest text-white/60"
-                style={{ transform: `translateX(-50%) translateY(${-Math.min(180, travelPixels / 2)}px)` }}
+                style={{ transform: `translateX(-50%) translateY(${-brakingZoneOffsetPixels}px)` }}
               >
                 braking zone
               </div>

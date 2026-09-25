@@ -31,3 +31,4 @@ Each ADR uses the same structure:
 | [0006](0006-run-and-validate-descents-on-the-server.md) | Accepted | Run and validate saved descents through a server action |
 | [0007](0007-store-private-immutable-attempts.md) | Accepted | Store private, immutable attempts in a realtime flight log |
 | [0008](0008-use-only-integrations-that-serve-the-core-loop.md) | Accepted | Use only DeepSpace integrations that serve the core loop |
+| [0009](0009-animate-every-descent-to-the-surface.md) | Accepted | Animate every completed descent from its start to the surface |
