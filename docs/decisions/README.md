@@ -36,3 +36,9 @@ Each ADR uses the same structure:
 | [0011](0011-scope-v3-as-a-live-landing-simulator.md) | Accepted | Scope V3 as a live landing simulator without orbit, atmosphere, or terrain |
 | [0012](0012-add-a-bounded-ai-flight-instructor.md) | Accepted | Add a bounded AI flight instructor for preparation and debriefing |
 | [0013](0013-use-an-explicit-touchdown-envelope.md) | Accepted | Use an explicit three-measurement touchdown envelope and documented flight tuning |
+| [0014](0014-organize-live-flight-around-a-single-cockpit-view.md) | Superseded | Organize live flight around a single cockpit view |
+| [0015](0015-use-a-minimal-adaptive-flight-hud.md) | Accepted | Use a minimal adaptive HUD around the flight scene |
+| [0016](0016-publish-a-verified-standardized-leaderboard.md) | Accepted | Publish verified best scores from a standardized challenge |
+| [0017](0017-use-void-and-aurora-visual-language.md) | Superseded | Use void-black surfaces with aurora-gradient instrument light |
+| [0018](0018-use-solid-accents-with-aurora-glow.md) | Accepted | Use solid cyan accents with blue-pink glow |
+| [0019](0019-bound-ai-instructor-response-budget.md) | Accepted | Bound the AI instructor response budget |

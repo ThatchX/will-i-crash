@@ -1,6 +1,8 @@
 # Will I Crash?
 
-Will I Crash? is a one-page, live planetary landing game built on DeepSpace. Choose any planet, set the starting altitude and velocity, then pilot the lander with throttle and rotation controls. The same deterministic simulation runs in the browser and on the server, so every saved result can be replayed and verified.
+Will I Crash? is a one-page, live planetary landing game built on DeepSpace. Choose any planet, practice with your own starting conditions, or fly a standardized ranked approach, then pilot the lander with throttle and rotation controls. The same deterministic simulation runs in the browser and on the server, so every saved result and public score can be replayed and verified.
+
+The interface uses a void-black flight deck with solid cyan controls and restrained blue, violet, and pink ambient glow. Each planet keeps its own environmental palette, while green, amber, and red remain reserved for flight status.
 
 ## The flight model
 
@@ -25,10 +27,10 @@ The model intentionally omits atmosphere, terrain, and orbit. Gas giants use a f
 ## How to play
 
 1. Select one of the eight planets.
-2. Set altitude, downward speed, and horizontal drift.
+2. Choose Free Flight and set the approach, or choose Ranked for standardized starting conditions.
 3. Start the flight and manage throttle, rotation, and finite fuel.
 4. Reach the surface slowly, with little drift, and close to upright.
-5. Review the verified result and ask the AI flight instructor for a debrief.
+5. Review the verified result, compare ranked scores, or ask the AI flight instructor for a debrief.
 
 The interface supports sliders and buttons on touch devices, plus keyboard controls:
 
@@ -42,6 +44,7 @@ The interface supports sliders and buttons on touch devices, plus keyboard contr
 - **Authentication** identifies the pilot only when they begin a flight, so visitors can inspect the simulator first.
 - **Server actions** replay the submitted control trace with the shared flight engine before accepting a result.
 - **Realtime records** store private, immutable, versioned flight runs and synchronize the latest ten runs across the pilot's sessions.
+- **Public realtime leaderboard** shows one server-verified best score per pilot and planet while keeping private flight traces and account identity out of the ranking record.
 - **AI chat** provides optional preflight guidance and post-flight coaching. Its tools are read-only, and it cannot control the craft or determine the outcome.
 
 Model 02 descent attempts remain in their original collection. Model 03 writes to a separate `flight-runs` collection so old results are never reinterpreted.

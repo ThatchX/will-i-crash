@@ -69,9 +69,9 @@ export default function Navigation() {
 
   return (
     <>
-      <nav data-testid="app-navigation" className="border-b border-border bg-background">
+      <nav data-testid="app-navigation" className="void-navigation border-b border-border">
         <div className="mx-auto flex h-12 max-w-7xl items-center gap-4 px-4">
-          <Link to="/" className="text-sm font-semibold text-foreground">
+          <Link to="/" className="aurora-text text-sm font-bold tracking-tight">
             {APP_DISPLAY_NAME}
           </Link>
 
@@ -136,7 +136,7 @@ export default function Navigation() {
             <button
               data-testid="nav-sign-in-button"
               onClick={() => setShowAuthModal(true)}
-              className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90"
+              className="aurora-button rounded-md px-3 py-1.5 text-sm font-medium text-primary-foreground"
             >
               Sign in
             </button>

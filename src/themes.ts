@@ -20,7 +20,7 @@ export const THEMES = [
   {
     id: 'orbital',
     label: 'Orbital',
-    description: 'Deep space surfaces with an amber guidance accent.',
+    description: 'Void-black glass with solid cyan controls and blue-pink ambient glow.',
   },
   {
     id: 'slate',

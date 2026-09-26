@@ -28,7 +28,7 @@ export default function AppLayout() {
   return (
     <DeepSpaceAuthProvider>
       <AuthBoot>
-        <div className="flex h-screen flex-col bg-background overflow-hidden">
+        <div className="app-void flex h-screen flex-col overflow-hidden">
           <Navigation />
           <main className="flex-1 overflow-y-auto min-h-0">
             <Suspense fallback={<div className="flex items-center justify-center h-full text-muted-foreground">Loading...</div>}>

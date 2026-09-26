@@ -12,6 +12,7 @@ import { usersSchema } from './schemas/users-schema'
 import { settingsSchema } from './schemas/admin-schema'
 import { descentAttemptsSchema } from './schemas/descent-attempts-schema'
 import { flightRunsSchema } from './schemas/flight-runs-schema'
+import { leaderboardScoresSchema } from './schemas/leaderboard-scores-schema'
 
 import { aiChatSchemas } from './schemas/ai-chat-schema'
 
@@ -21,4 +22,5 @@ export const schemas: CollectionSchema[] = [
   settingsSchema,
   descentAttemptsSchema,
   flightRunsSchema,
+  leaderboardScoresSchema,
 ]

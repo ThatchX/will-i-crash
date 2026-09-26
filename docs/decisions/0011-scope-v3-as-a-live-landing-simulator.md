@@ -3,7 +3,7 @@
 - **Status:** Accepted
 - **Date:** 2026-09-25
 - **Supersedes:** Portions of ADR 0002, ADR 0004, and ADR 0009
-- **Superseded by:** None
+- **Superseded by:** ADR 0016 (global leaderboard exclusion only)
 
 ## Decision
 

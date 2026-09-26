@@ -1,4 +1,4 @@
-import type { ActionHandler } from 'deepspace/worker'
+import type { ActionHandler, ActionTools } from 'deepspace/worker'
 import type { Env } from '../../worker'
 import {
   assessLanding,
@@ -9,12 +9,19 @@ import {
 } from '../domain/landing'
 import {
   FLIGHT_MODEL_VERSION,
+  RANKED_CHALLENGE_KEY,
+  calculateLandingScore,
+  getLeaderboardCallsign,
+  getLeaderboardPilotKey,
+  matchesRankedInitialConditions,
   replayFlight,
   validateControlEvents,
   validateInitialConditions,
   type FlightControlEvent,
   type FlightInitialConditions,
+  type FlightResult,
   type FlightRunRecord,
+  type LeaderboardScoreRecord,
 } from '../domain/flight'
 
 const assessLandingAction: ActionHandler<Env> = async ({ userId, params, tools }) => {
@@ -72,10 +79,15 @@ const assessLandingAction: ActionHandler<Env> = async ({ userId, params, tools }
 const completeFlightAction: ActionHandler<Env> = async ({ userId, params, tools }) => {
   const initial = parseInitialConditions(params.initial)
   const commands = parseControlEvents(params.commands)
+  const ranked = params.ranked === true
   const issues = [
     ...validateInitialConditions(initial),
     ...validateControlEvents(commands),
   ]
+
+  if (ranked && isPlanetId(initial.planetId) && !matchesRankedInitialConditions(initial)) {
+    issues.push({ field: 'commands', message: 'ranked flights must use the standardized starting conditions' })
+  }
 
   if (issues.length > 0) {
     return {
@@ -102,13 +114,76 @@ const completeFlightAction: ActionHandler<Env> = async ({ userId, params, tools 
   const created = await tools.create<Record<string, unknown>>('flight-runs', { ...record })
   if (!created.success) return created
 
+  const leaderboard = ranked
+    ? await updateLeaderboard(userId, finalState.result, initial.planetId, tools)
+    : undefined
+
   return {
     success: true,
     data: {
       recordId: created.data.recordId,
       result: finalState.result,
       totalTicks: finalState.tick,
+      leaderboard,
     },
+  }
+}
+
+async function updateLeaderboard(
+  userId: string,
+  result: FlightResult,
+  planetId: FlightInitialConditions['planetId'],
+  tools: ActionTools,
+) {
+  const score = calculateLandingScore(result)
+  if (score === 0) {
+    return { score, qualified: false, isPersonalBest: false, saved: true }
+  }
+
+  const pilotKey = getLeaderboardPilotKey(userId)
+  const existing = await tools.query<LeaderboardScoreRecord>('leaderboard-scores', {
+    where: { pilotKey, modelVersion: FLIGHT_MODEL_VERSION, challengeKey: RANKED_CHALLENGE_KEY, planetId },
+    limit: 1,
+  })
+  if (!existing.success) {
+    return { score, qualified: true, isPersonalBest: false, saved: false }
+  }
+
+  const previous = existing.data.records[0]
+  if (previous && previous.data.score >= score) {
+    return { score, qualified: true, isPersonalBest: false, saved: true }
+  }
+
+  const row: LeaderboardScoreRecord = {
+    pilotKey,
+    callsign: getLeaderboardCallsign(userId),
+    modelVersion: FLIGHT_MODEL_VERSION,
+    challengeKey: RANKED_CHALLENGE_KEY,
+    planetId,
+    score,
+    touchdownVerticalSpeed: result.touchdownVerticalSpeed,
+    touchdownHorizontalSpeed: result.touchdownHorizontalSpeed,
+    touchdownAngleDegrees: result.touchdownAngleDegrees,
+    fuelRemainingPercent: result.fuelRemainingPercent,
+    flightTimeSeconds: result.flightTimeSeconds,
+  }
+  const scorePatch = {
+    score: row.score,
+    touchdownVerticalSpeed: row.touchdownVerticalSpeed,
+    touchdownHorizontalSpeed: row.touchdownHorizontalSpeed,
+    touchdownAngleDegrees: row.touchdownAngleDegrees,
+    fuelRemainingPercent: row.fuelRemainingPercent,
+    flightTimeSeconds: row.flightTimeSeconds,
+  }
+  const saved = previous
+    ? await tools.update<LeaderboardScoreRecord>('leaderboard-scores', previous.recordId, scorePatch)
+    : await tools.create<LeaderboardScoreRecord>('leaderboard-scores', row)
+
+  return {
+    score,
+    qualified: true,
+    isPersonalBest: saved.success,
+    saved: saved.success,
   }
 }
 

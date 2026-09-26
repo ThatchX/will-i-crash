@@ -3,9 +3,14 @@ import {
   FLIGHT_TICKS_PER_SECOND,
   MAX_FLIGHT_TICKS,
   appendControlEvent,
+  calculateLandingScore,
   createInitialFlightState,
   evaluateTouchdown,
   replayFlight,
+  getRankedInitialConditions,
+  getLeaderboardCallsign,
+  getLeaderboardPilotKey,
+  matchesRankedInitialConditions,
   stepFlight,
   validateControlEvents,
   validateInitialConditions,
@@ -116,5 +121,38 @@ describe('V3 flight simulation', () => {
         { tick: MAX_FLIGHT_TICKS + 1, throttlePercent: 110, rotationDirection: 1 },
       ])[0]?.field,
     ).toBe('commands')
+  })
+
+  it('uses one standardized configuration for ranked flights', () => {
+    const ranked = getRankedInitialConditions('mars')
+    expect(ranked).toEqual({
+      planetId: 'mars',
+      altitudeMeters: 300,
+      verticalSpeedMetersPerSecond: 10,
+      horizontalSpeedMetersPerSecond: 8,
+    })
+    expect(matchesRankedInitialConditions(ranked)).toBe(true)
+    expect(matchesRankedInitialConditions({ ...ranked, altitudeMeters: 301 })).toBe(false)
+  })
+
+  it('scores only safe ranked landings with explainable weighted components', () => {
+    const base = evaluateTouchdown({
+      ...createInitialFlightState(initial),
+      tick: 300,
+      verticalSpeedMetersPerSecond: 0,
+      horizontalSpeedMetersPerSecond: 0,
+      angleDegrees: 0,
+      fuelPercent: 100,
+    })
+    expect(calculateLandingScore(base)).toBe(1_000)
+    expect(calculateLandingScore({ ...base, touchdownVerticalSpeed: 2.5 })).toBe(800)
+    expect(calculateLandingScore({ ...base, outcome: 'MARGINAL' })).toBe(0)
+  })
+
+  it('derives a stable public pilot key without exposing the account identifier', () => {
+    const userId = 'user@example.com'
+    expect(getLeaderboardPilotKey(userId)).toBe(getLeaderboardPilotKey(userId))
+    expect(getLeaderboardPilotKey(userId)).not.toContain(userId)
+    expect(getLeaderboardCallsign(userId)).toMatch(/^Pilot-[0-9A-F]{6}$/)
   })
 })

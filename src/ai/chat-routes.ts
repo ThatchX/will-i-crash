@@ -263,6 +263,10 @@ export function registerAiChatRoutes(
       profile: 'application',
       modelId: usedModelId,
       authToken: jwt,
+      // The instructor is intentionally concise. Bounding each model step keeps
+      // the provider's up-front credit reservation proportional to that UX and
+      // prevents short Claude answers from being rejected before they start.
+      maxOutputTokens: 700,
       system: systemText,
       messages,
       tools,

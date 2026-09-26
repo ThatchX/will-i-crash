@@ -14,6 +14,8 @@ export const MAX_FLIGHT_TICKS = MAX_FLIGHT_SECONDS * FLIGHT_TICKS_PER_SECOND
 export const MAX_ROTATION_DEGREES = 60
 export const ROTATION_RATE_DEGREES_PER_SECOND = 54
 export const FUEL_BURN_PERCENT_PER_SECOND_AT_FULL_POWER = 3.2
+export const RANKED_CHALLENGE_VERSION = 1
+export const RANKED_CHALLENGE_KEY = `model-${FLIGHT_MODEL_VERSION}-standard-${RANKED_CHALLENGE_VERSION}`
 
 export const SAFE_VERTICAL_SPEED_METERS_PER_SECOND = 5
 export const SAFE_HORIZONTAL_SPEED_METERS_PER_SECOND = 3
@@ -90,6 +92,59 @@ export interface FlightRunRecord extends FlightInitialConditions, FlightResult {
   modelVersion: number
   commandsJson: string
   totalTicks: number
+}
+
+export interface LeaderboardScoreRecord extends Record<string, unknown> {
+  pilotKey: string
+  callsign: string
+  modelVersion: number
+  challengeKey: string
+  planetId: PlanetId
+  score: number
+  touchdownVerticalSpeed: number
+  touchdownHorizontalSpeed: number
+  touchdownAngleDegrees: number
+  fuelRemainingPercent: number
+  flightTimeSeconds: number
+}
+
+export function getLeaderboardPilotKey(userId: string): string {
+  const first = hashIdentifier(userId, 2166136261)
+  const second = hashIdentifier(userId, 2246822507)
+  return `pilot_${first}${second}`
+}
+
+export function getLeaderboardCallsign(userId: string): string {
+  return `Pilot-${getLeaderboardPilotKey(userId).slice(6, 12).toUpperCase()}`
+}
+
+export function getRankedInitialConditions(planetId: PlanetId): FlightInitialConditions {
+  return {
+    planetId,
+    altitudeMeters: 300,
+    verticalSpeedMetersPerSecond: 10,
+    horizontalSpeedMetersPerSecond: 8,
+  }
+}
+
+export function matchesRankedInitialConditions(initial: FlightInitialConditions): boolean {
+  const ranked = getRankedInitialConditions(initial.planetId)
+  return initial.altitudeMeters === ranked.altitudeMeters &&
+    initial.verticalSpeedMetersPerSecond === ranked.verticalSpeedMetersPerSecond &&
+    initial.horizontalSpeedMetersPerSecond === ranked.horizontalSpeedMetersPerSecond
+}
+
+/**
+ * Ranked flights reward a controlled touchdown, not speed. A safe flight earns
+ * up to 1,000 points: descent 40%, drift 30%, attitude 20%, fuel 10%.
+ */
+export function calculateLandingScore(result: FlightResult): number {
+  if (result.outcome !== 'SAFE_APPROACH') return 0
+  const descent = quality(result.touchdownVerticalSpeed, SAFE_VERTICAL_SPEED_METERS_PER_SECOND) * 400
+  const drift = quality(Math.abs(result.touchdownHorizontalSpeed), SAFE_HORIZONTAL_SPEED_METERS_PER_SECOND) * 300
+  const attitude = quality(Math.abs(result.touchdownAngleDegrees), SAFE_ANGLE_DEGREES) * 200
+  const fuel = clamp(result.fuelRemainingPercent, 0, 100)
+  return Math.round(descent + drift + attitude + fuel)
 }
 
 export function createInitialFlightState(initial: FlightInitialConditions): FlightState {
@@ -355,6 +410,19 @@ function normalizeRotationDirection(value: number): -1 | 0 | 1 {
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value))
+}
+
+function quality(value: number, safeLimit: number): number {
+  return clamp(1 - value / safeLimit, 0, 1)
+}
+
+function hashIdentifier(value: string, seed: number): string {
+  let hash = seed
+  for (const character of value) {
+    hash ^= character.charCodeAt(0)
+    hash = Math.imul(hash, 16777619)
+  }
+  return (hash >>> 0).toString(16).padStart(8, '0')
 }
 
 function format(value: number): string {
