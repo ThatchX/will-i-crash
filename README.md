@@ -59,10 +59,10 @@ The assignment-facing project summary, integration rationale, tradeoff, agent co
 
 ## Run locally
 
-Use a supported Node release (22.15+, 24, or 26), then:
+Use Node 22.15–22.x, 24.x, or 26.x with npm 11.6 or newer, then:
 
 ```bash
-npm install
+npm ci
 npx deepspace dev start
 ```
 

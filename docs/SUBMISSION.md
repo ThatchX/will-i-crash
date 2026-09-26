@@ -74,6 +74,7 @@ I made the final calls to keep the product focused on live landing, omit orbit, 
 - The landing surface is flat and effectively infinite.
 - Atmosphere, terrain, and orbital mechanics are intentionally omitted.
 - The AI instructor advises before or after a flight and never enters the real-time control loop.
+- Sending instructor messages from two browser tabs at the same time can interleave that chat's saved history. Normal single-tab chat use is unaffected.
 - A future iteration could add time-based challenges, a bounded landing zone, and richer verified debrief summaries after testing the current experience with players.
 
 ## Short portal note
