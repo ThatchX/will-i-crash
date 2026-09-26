@@ -2,6 +2,8 @@
 
 Will I Crash? is a one-page, live planetary landing game built on DeepSpace. Choose any planet, practice with your own starting conditions, or fly a standardized ranked approach, then pilot the lander with throttle and rotation controls. The same deterministic simulation runs in the browser and on the server, so every saved result and public score can be replayed and verified.
 
+**Live app:** https://will-i-crash.app.space
+
 The interface uses a void-black flight deck with solid cyan controls and restrained blue, violet, and pink ambient glow. Each planet keeps its own environmental palette, while green, amber, and red remain reserved for flight status.
 
 ## The flight model

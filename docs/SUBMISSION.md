@@ -2,11 +2,9 @@
 
 ## Submission links
 
-- **Live app:** Pending V3 deployment. Expected URL: `https://will-i-crash.app.space`
+- **Live app:** https://will-i-crash.app.space
 - **Repository:** https://github.com/ThatchX/will-i-crash
-- **Submission branch:** `v3-live-flight`
-
-> Replace the live-app line with the confirmed production URL after deployment and final production verification.
+- **Submission branch:** `master` (`v3-live-flight` points to the same submitted work)
 
 ## What I built
 
@@ -64,12 +62,15 @@ I made the final calls to keep the product focused on live landing, omit orbit, 
 - TypeScript validation passes.
 - All 17 unit tests pass.
 - The production build completes successfully.
-- The agent tested a real Claude Sonnet 5 response through the instructor popup.
-- The V3 source is pushed to the `v3-live-flight` branch at commit `48324ca`.
+- DeepSpace confirmed the production edge and data plane at the live URL.
+- Production sign-in completed successfully.
+- Production crash, safe-landing, and marginal ranked outcomes were replayed by the server and synchronized into the flight log.
+- The production leaderboard loaded the standardized Earth challenge and correctly rejected an unsafe ranked result from scoring.
+- Claude Sonnet 5 read the latest verified production flight and returned a record-grounded debrief through the instructor popup.
+- The submitted V3 source is on `master`; `v3-live-flight` is retained at the same revision.
 
 ## Known limitations and next work
 
-- The V3 branch still needs to be deployed and checked at its production URL.
 - The landing surface is flat and effectively infinite.
 - Atmosphere, terrain, and orbital mechanics are intentionally omitted.
 - The AI instructor advises before or after a flight and never enters the real-time control loop.
