@@ -53,6 +53,8 @@ Model 02 descent attempts remain in their original collection. Model 03 writes t
 
 The product scope, physics, interface, data model, security, and AI boundaries are recorded in the [architecture decision log](docs/decisions/README.md).
 
+The assignment-facing project summary, integration rationale, tradeoff, agent contribution, verification record, and known limitations are collected in the [submission notes](docs/SUBMISSION.md).
+
 ## Run locally
 
 Use a supported Node release (22.15+, 24, or 26), then:
